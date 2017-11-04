@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
+//determine the angle and behavior of the object walk to next point
 public class WalkTracker : MonoBehaviour {
 
 	private float closs_diff = 0.2f;
