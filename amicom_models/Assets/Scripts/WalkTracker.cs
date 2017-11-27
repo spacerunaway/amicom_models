@@ -14,12 +14,8 @@ public class WalkTracker : MonoBehaviour {
 	private Vector2[] point3 = new Vector2[3]; 
 	private int[] next_turn;
 	private int[] reset_turn = new int[]{ 0, 0, 0, 0, 0, 0, 0, 0 };
-	public int prev = 0;
-	public int now = 1;
-	public int next = 2;
-	private bool prevback = false;
-	private bool nowback = false;
-	private bool nextback = false;
+	public int prev = 0,now = 1,next = 2;
+	private bool prevback = false,nowback = false,nextback = false;
 	private int max_goal_num;
 	private int min_goal_num = 1;
 
@@ -41,7 +37,6 @@ public class WalkTracker : MonoBehaviour {
 					animator.SetBool ("walk", true);
 					set_turn_bool (reset_turn);
 					animator.SetBool ("stop", false);
-					Debug.Log (next);
 				}
 			}
 			if (is_positions_cross (transform.position, obj_mkr.goal_anchors [next])) {
@@ -58,17 +53,8 @@ public class WalkTracker : MonoBehaviour {
 	public void init_walkstage(){
 		max_goal_num = obj_mkr.goal_num - 1;
 	}
-
-	bool is_positions_cross(Vector3 a, Vector3 b){
-		bool res = false;
-		float x_diff = (a.x - b.x) * (a.x - b.x);
-		float z_diff = (a.z - b.z) * (a.z - b.z);
-		if (x_diff < closs_diff && z_diff < closs_diff) {
-			res = true;
-		}
-		return res;
-	}
 		
+	#region Which angel?
 	void chose_angle(Vector3[] v3){
 		point3 [0] = new Vector2 (v3 [prev].x, v3 [prev].z);
 		point3 [1] = new Vector2 (v3 [now].x, v3 [now].z);
@@ -104,6 +90,18 @@ public class WalkTracker : MonoBehaviour {
 		animator.SetBool ("turnL135", Convert.ToBoolean(next_turn[5]));
 		animator.SetBool ("turnR180", Convert.ToBoolean(next_turn[6]));
 		animator.SetBool ("noturn", Convert.ToBoolean(next_turn[7]));
+	}
+	#endregion
+
+	#region Next Point is?
+	bool is_positions_cross(Vector3 a, Vector3 b){
+		bool res = false;
+		float x_diff = (a.x - b.x) * (a.x - b.x);
+		float z_diff = (a.z - b.z) * (a.z - b.z);
+		if (x_diff < closs_diff && z_diff < closs_diff) {
+			res = true;
+		}
+		return res;
 	}
 
 	void go_next(){
@@ -142,5 +140,5 @@ public class WalkTracker : MonoBehaviour {
 			next++;
 		}
 	}
-
+	#endregion
 }
