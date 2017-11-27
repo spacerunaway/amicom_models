@@ -11,3 +11,12 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/ModelWalkStage.unity
     guid: 77d67172e5b25453aa4f240b98eb1207
+  - enabled: 0
+    path: Assets/UnityARKitPlugin/Examples/UnityAROcclusion/UnityAROcclusion.unity
+    guid: 7f026c59fb9d6489ab924c6e0e119760
+  - enabled: 0
+    path: Assets/ModelRoomValkyrie.unity
+    guid: eb8d783d5ef4d401abbdce42f672f699
+  - enabled: 0
+    path: Assets/test.unity
+    guid: 06e34d982d6c6448591a9f5d564c52c3

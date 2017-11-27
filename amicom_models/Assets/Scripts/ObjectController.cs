@@ -3,133 +3,121 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR.iOS;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
-public class ObjectController : MonoBehaviour {
+public class ObjectController : MonoBehaviour
+{
 	private ObjectMaker obj_mkr;
+	public float rotateSpeed = 1.0f;
+	//回転速度(角度/秒)
 
-	void Start(){
-		obj_mkr = GameObject.Find( "ObjectMaker" ).GetComponent<ObjectMaker>();
+	//private bool tap, swipeLeft, swipeRight, swipeUp, swipeDown;
+	private Vector3 desiredPosition;
+	private Vector2 beforePoint, nowPoint, difference;
+	private float horizontalAngle, varticalAngle;
+	private Transform target;
+
+	void Start ()
+	{
+		obj_mkr = GameObject.Find ("ObjectMaker").GetComponent<ObjectMaker> ();
 	}
 
-	void Update(){
+	void Update ()
+	{
+		if (obj_mkr.obj_num < obj_mkr.goal_num) {
+			target = obj_mkr.crated_obj [obj_mkr.obj_num].transform;
+			//tap = swipeLeft = swipeRight = swipeUp = swipeDown = false;
+
+			//2本指でタップした場合は回転
+			if (Input.touchCount == 2) {
+				//押下時のポイントを取得
+				if (Input.touchCount > 0) {
+					if (Input.GetTouch (0).phase == TouchPhase.Began) {
+						beforePoint = Input.GetTouch (0).position;
+					}
+				}
+				//スワイプでの継続した入力があった場合、その方向へ回転させる
+				if (Input.GetTouch (0).phase == TouchPhase.Moved) {
+					nowPoint = Input.GetTouch (0).position;
+					//水平方向の移動があった場合、水平方向に回転
+					if (nowPoint.x - beforePoint.x != 0) {
+						horizontalAngle = (nowPoint.x - beforePoint.x)/5f;
+						horizontalAngle *= rotateSpeed * Time.deltaTime;
+
+						//水平方向に回転させる(水平方向はワールド軸)
+						target.Rotate (0, horizontalAngle, 0, Space.World);
+					}
+					//現フレームのポイントを格納
+					//beforePoint = nowPoint;
+				}
+			}
+		}
 	}
-		
-	public void next_obj(){
+
+	private void Reset ()
+	{
+		beforePoint = nowPoint = difference = Vector2.zero;
+	}
+
+	#region Change object by touch
+
+	public void next_obj ()
+	{
 		if (obj_mkr.obj_num < obj_mkr.goal_num) {
 			obj_mkr.obj_num++;
 		}
 	}
-	public void prev_obj(){
+
+	public void prev_obj ()
+	{
 		if (obj_mkr.obj_num > 0) {
 			obj_mkr.obj_num--;
 		}
 	}
-	public void LookAt(){
-		obj_mkr.crated_obj[obj_mkr.obj_num].transform.LookAt (Camera.main.transform.position);
-		obj_mkr.crated_obj[obj_mkr.obj_num].transform.eulerAngles = new Vector3 (0, transform.eulerAngles.y, 0);
+
+	public void LookAt ()
+	{
+		target.LookAt (Camera.main.transform.position);
+		target.eulerAngles = new Vector3 (0, transform.eulerAngles.y, 0);
 	}
 
-	public void Bigger(){
-		obj_mkr.crated_obj[obj_mkr.obj_num].transform.localScale += new Vector3 (0.1f, 0.1f, 0.1f);
+	public void Bigger ()
+	{
+		target.localScale += new Vector3 (0.1f, 0.1f, 0.1f);
 	}
 
-	public void Smaller(){
-		if (obj_mkr.crated_obj[obj_mkr.obj_num].transform.localScale.x > 0.1f) {
-			obj_mkr.crated_obj[obj_mkr.obj_num].transform.localScale -= new Vector3 (0.1f, 0.1f, 0.1f);
+	public void Smaller ()
+	{
+		if (target.localScale.x > 0.1f) {
+			target.localScale -= new Vector3 (0.1f, 0.1f, 0.1f);
 		} 
 	}
 
-	public void Trun_left(){
-		obj_mkr.crated_obj[obj_mkr.obj_num].transform.Rotate(new Vector3 (0, -5, 0));
+	public void Trun_left ()
+	{
+		target.Rotate (new Vector3 (0, -5, 0));
 	}
 
-	public void Trun_right(){
-		obj_mkr.crated_obj[obj_mkr.obj_num].transform.Rotate(new Vector3 (0, 5, 0));
+	public void Trun_right ()
+	{
+		target.Rotate (new Vector3 (0, 5, 0));
 	}
 
+	public void Up ()
+	{
+		Vector3 temp = target.transform.position + new Vector3 (0, 0.1f, 0);
+		target.transform.position = temp;
+	}
+
+	public void Down ()
+	{
+		Vector3 temp = target.transform.position + new Vector3 (0, -0.1f, 0);
+		target.transform.position = temp;
+	}
+	public void deleteBody(){
+		GameObject body = target.Find ("Body").gameObject;
+		body.SetActive(!body.activeSelf);
+	}
+
+	#endregion
 }
-	/*
-	private float[] angle_vector2(float[] cos){
-		float[] res = new float[cos.Length];
-		for (int i = 0; i < cos.Length; i++) {
-			res [i] = Mathf.Acos(cos [i]) * Mathf.Rad2Deg;
-		}
-		return res;
-	}
-
-	private float[] cos_vector2(Vector2[] v2){
-		float[] res = new float[v2.Length];
-		for (int i = 1; i < v2.Length; i++) {
-			Vector2 va = v2 [(i + 1) % v2.Length] - v2 [i];
-			Vector2 vb = v2 [i] - v2 [i - 1];
-			res [i] = Vector2.Dot (va, vb) / (va.magnitude * vb.magnitude);
-		}
-		return res;
-	}
-
-	private float[] sin_vector2(Vector2[] v2){
-		float[] res = new float[v2.Length];
-		for (int i = 1; i < v2.Length; i++) {
-			Vector2 va = v2 [(i + 1) % v2.Length] - v2 [i];
-			Vector2 vb = v2 [i] - v2 [i - 1];
-			res [i] = Vector2.SignedAngle (va, vb);
-		}
-		return res;
-	}
-	public Vector2[] v3to2xz(Vector3 [] v3){
-		Vector2[] v2 = new Vector2[obj_mkr.n];
-		for (int i = 0; i < obj_mkr.n; i++) {
-			v2 [i] = new Vector2 (v3 [i].x, v3 [i].z);
-		}
-		return v2;
-	}
-	/*
-		for (int i = 0; i < next_d.Length; i++) {
-			if (cos[i] >= 0.0f) {
-				if (angle [i] < 25f) {
-					turn_arr [i] = new int[]{ 0, 0, 0, 0, 0, 0, 0 };
-				} else if (25f <= angle [i] && angle [i] < 65f) {
-					turn_arr [i] = new int[]{ 1, 0, 0, 0, 0, 0, 0 };
-				} else if (65f <= angle [i] && angle [i] < 110f) {
-					turn_arr [i] = new int[]{ 0, 1, 0, 0, 0, 0, 0 };
-				} else if (110f <= angle [i] && angle [i] < 155f) {
-					turn_arr [i] = new int[]{ 0, 0, 1, 0, 0, 0, 0 };
-				} else {
-					turn_arr [i] = new int[]{ 0, 0, 0, 0, 0, 0, 1 };
-				}
-			} else {
-				if (angle [i] < 25f) {
-					turn_arr [i] = new int[]{ 0, 0, 0, 0, 0, 0, 0 };
-				} else if (25f <= angle [i] && angle [i] < 65f) {
-					turn_arr [i] = new int[]{ 0, 0, 0, 1, 0, 0, 0 };
-				} else if (65f <= angle [i] && angle [i] < 110f) {
-					turn_arr [i] = new int[]{ 0, 0, 0, 0, 1, 0, 0 };
-				} else if (110f <= angle [i] && angle [i] < 155f) {
-					turn_arr [i] = new int[]{ 0, 0, 0, 0, 0, 1, 0 };
-				} else {
-					turn_arr [i] = new int[]{ 0, 0, 0, 0, 0, 0, 1 };
-				}
-			}
-		}
-
-		for (int i = 0; i < next_d.Length; i++) {
-			if (-25f <= sin [i] && sin [i] < 25f) {
-				turn_arr [i] = new int[]{ 0, 0, 0, 0, 0, 0, 0, 1 };
-				} else if (25f <= sin [i] && sin [i] < 65f) {
-				turn_arr [i] = new int[]{ 1, 0, 0, 0, 0, 0, 0, 0 };
-				} else if (65f <= sin [i] && sin [i] < 110f) {
-				turn_arr [i] = new int[]{ 0, 1, 0, 0, 0, 0, 0, 0 };
-				} else if (110f <= sin [i] && sin [i] < 155f) {
-				turn_arr [i] = new int[]{ 0, 0, 1, 0, 0, 0, 0, 0 };
-				} else if (-65f <= sin [i] && sin [i] < -25f) {
-				turn_arr [i] = new int[]{ 0, 0, 0, 1, 0, 0, 0, 0 };
-				} else if (-110f <= sin [i] && sin [i] < -65) {
-				turn_arr [i] = new int[]{ 0, 0, 0, 0, 1, 0, 0, 0 };
-				} else if (-155 <= sin [i] && sin [i] < -110) {
-				turn_arr [i] = new int[]{ 0, 0, 0, 0, 0, 1, 0, 0};
-				} else {
-				turn_arr [i] = new int[]{ 0, 0, 0, 0, 0, 0, 1, 0 };
-				}
-			} 
-		*/
-

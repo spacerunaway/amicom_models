@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class ARModelWalk : MonoBehaviour {
-	private Canvas canvas_anchor_setting;
-	private Canvas canvas_can_go_walk;
+	private Canvas canvas_anchor_setting, canvas_can_go_walk;
 	private ObjectMaker obj_mkr;
 
 	void Start(){
@@ -12,7 +11,7 @@ public class ARModelWalk : MonoBehaviour {
 		canvas_can_go_walk = GameObject.Find ("CanGoWalk").GetComponent<Canvas> ();
 		obj_mkr = GameObject.Find( "ObjectMaker" ).GetComponent<ObjectMaker>();
 		obj_mkr.obj_num = 1;
-		obj_mkr.CreateObj(Vector3.zero);
+		obj_mkr.CreateObj(new Vector3(0f,3f,0f));
 	}
 
 	void Update()
@@ -33,6 +32,8 @@ public class ARModelWalk : MonoBehaviour {
 		}
 
 	}
+
+	#region Change UIs
 	public void go_next_stage(){
 		for (int i = 0; i < obj_mkr.goal_num; i++) {
 			GameObject.Destroy (obj_mkr.crated_obj [i]);
@@ -46,12 +47,14 @@ public class ARModelWalk : MonoBehaviour {
 	}
 	public void auto_setting(){
 		if (obj_mkr.goal_num > 1) {
-			Vector3 temp = obj_mkr.crated_obj [1].transform.position;
-			obj_mkr.CreateObj (temp + new Vector3 (1.0f, -3.5f, 25.0f));
-			obj_mkr.CreateObj (temp + new Vector3 (-10.0f, -3.5f, 25.0f));
-			obj_mkr.CreateObj (temp + new Vector3 (-10.0f, -3.5f, 1.0f));
-			obj_mkr.CreateObj (temp + new Vector3 (1.0f, -3.5f, 1.0f));
+			Vector3 temp = obj_mkr.crated_obj [1].transform.position + new Vector3 (0.0f, -0.2f, 0.0f);
+			obj_mkr.goal_anchors [1] = temp;
+			obj_mkr.CreateObj (temp + new Vector3 (1.0f, 0.0f, 25.0f));
+			obj_mkr.CreateObj (temp + new Vector3 (-10.0f, 0.0f, 25.0f));
+			obj_mkr.CreateObj (temp + new Vector3 (-10.0f, 0.0f, 1.0f));
+			obj_mkr.CreateObj (temp + new Vector3 (1.0f, 0.0f, 1.0f));
 		}
 	}
+	#endregion
 }
 

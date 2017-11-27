@@ -38,6 +38,7 @@ public class ARShowRoom : MonoBehaviour {
 		}
 
 	}
+	#region Change UIs
 	public void show_stage(){
 		obj_mkr.can_create_new_obj = false;
 		canvas_setting.enabled = false;
@@ -49,4 +50,5 @@ public class ARShowRoom : MonoBehaviour {
 		scroll_view.SetActive (false);
 		obj_mkr.wait_click_screen = true;
 	}
+	#endregion
 }

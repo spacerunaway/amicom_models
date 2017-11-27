@@ -22,3 +22,10 @@
 /Users/evergreen/Desktop/unity_project/amicom_models/amicom_models/Temp/bin/Debug/Unity.CecilTools.dll
 /Users/evergreen/Desktop/unity_project/amicom_models/amicom_models/Temp/bin/Debug/Mono.Cecil.Pdb.dll
 /Users/evergreen/Desktop/unity_project/amicom_models/amicom_models/Temp/bin/Debug/Mono.Cecil.Mdb.dll
+/Users/evergreen/Desktop/unity_project/amicom_models/amicom_models/Temp/bin/Debug/UnityEngine.UIAutomation.dll
+/Users/evergreen/Desktop/unity_project/amicom_models/amicom_models/Temp/bin/Debug/UnityEngine.GoogleAudioSpatializer.dll
+/Users/evergreen/Desktop/unity_project/amicom_models/amicom_models/Temp/bin/Debug/UnityEngine.SpatialTracking.dll
+/Users/evergreen/Desktop/unity_project/amicom_models/amicom_models/Temp/bin/Debug/UnityEngine.Purchasing.dll
+/Users/evergreen/Desktop/unity_project/amicom_models/amicom_models/Temp/bin/Debug/Unity.Cecil.dll
+/Users/evergreen/Desktop/unity_project/amicom_models/amicom_models/Temp/bin/Debug/Unity.Cecil.Pdb.dll
+/Users/evergreen/Desktop/unity_project/amicom_models/amicom_models/Temp/bin/Debug/Unity.Cecil.Mdb.dll
